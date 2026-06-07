@@ -130,6 +130,7 @@ const FamilyTree = forwardRef<FamilyTreeRef, FamilyTreeProps>(({ data, layoutMod
     const nodeW = 180;
     const nodeH = 220;
     const photoR = 32;
+    const photoY = -nodeH / 2 + photoR + 16; // Definisikan lebih awal untuk digunakan di clipPath
 
     const treeLayout = layoutMode === 'horizontal'
       ? d3.tree<FamilyMember>().nodeSize([nodeH + 30, nodeW + 80])
@@ -198,12 +199,6 @@ const FamilyTree = forwardRef<FamilyTreeRef, FamilyTreeProps>(({ data, layoutMod
       .attr('stroke', GOLD).attr('stroke-width', 1.5).attr('opacity', 0.35)
       .attr('d', linkGenerator as any);
 
-    // Clip paths for circular photos
-    nodes.forEach(d => {
-      defs.append('clipPath').attr('id', `clip-${d.data.id}`)
-        .append('circle').attr('cx', 0).attr('cy', 0).attr('r', photoR);
-    });
-
     // Nodes
     const nodeGroup = g.append('g').attr('class', 'nodes');
     const nodeEnter = nodeGroup.selectAll('.node').data(nodes).enter()
@@ -236,8 +231,6 @@ const FamilyTree = forwardRef<FamilyTreeRef, FamilyTreeProps>(({ data, layoutMod
     });
 
     // Photo area (top center)
-    const photoY = -nodeH / 2 + photoR + 16;
-
     // Photo background circle
     nodeEnter.append('circle')
       .attr('cx', 0).attr('cy', photoY)
@@ -246,30 +239,45 @@ const FamilyTree = forwardRef<FamilyTreeRef, FamilyTreeProps>(({ data, layoutMod
       .attr('stroke', d => d.data.isAlive ? GOLD : '#555')
       .attr('stroke-width', 2);
 
-    // Photo or avatar
+    // Photo or avatar (REVISI TOTAL - FIX COORDINATE BUGS)
     nodeEnter.each(function(d) {
       const g2 = d3.select(this);
       const photoUrl = d.data.photoUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(d.data.name)}&background=1a1a2e&color=c9a84c&size=128`;
 
+      // 1. Buat clipPath lokal unik untuk node ini, langsung pasang koordinat di (0, photoY)
+      defs.append('clipPath')
+        .attr('id', `clip-fixed-${d.data.id}`)
+        .append('circle')
+        .attr('cx', 0)
+        .attr('cy', photoY) // Titik pusat lingkaran masking disamakan dengan posisi tinggi frame
+        .attr('r', photoR);
+
+      // 2. Render gambar langsung menggunakan koordinat photoY tanpa pembungkus Group tambahan
       g2.append('image')
         .attr('href', photoUrl)
-        .attr('x', -photoR).attr('y', photoY - photoR)
-        .attr('width', photoR * 2).attr('height', photoR * 2)
-        .attr('clip-path', `url(#clip-${d.data.id})`)
+        .attr('x', -photoR)          // Geser ke kiri setengah lebar agar center secara horizontal
+        .attr('y', photoY - photoR)  // Geser ke atas setengah tinggi dari titik tengah frame foto
+        .attr('width', photoR * 2)
+        .attr('height', photoR * 2)
+        .attr('clip-path', `url(#clip-fixed-${d.data.id})`) // Gunakan clipPath baru yang sudah sinkron
         .attr('preserveAspectRatio', 'xMidYMid slice');
 
-      // Gender badge
+      // 3. Gender badge (Tetap presisi di pojok kanan bawah frame foto)
       const genderIcon = d.data.gender === 'laki-laki' ? '♂' : d.data.gender === 'perempuan' ? '♀' : '';
       if (genderIcon) {
-        g2.append('circle')
-          .attr('cx', photoR - 2).attr('cy', photoY + photoR - 2)
+        const badgeG = g2.append('g')
+          .attr('transform', `translate(${photoR - 2}, ${photoY + photoR - 2})`);
+
+        badgeG.append('circle')
+          .attr('cx', 0).attr('cy', 0)
           .attr('r', 9)
           .attr('fill', d.data.gender === 'laki-laki' ? '#1e3a5f' : '#5f1e3a')
-          .attr('stroke', CARD_BG).attr('stroke-width', 1.5);
-        g2.append('text')
-          .attr('x', photoR - 2).attr('y', photoY + photoR - 2)
-          .attr('text-anchor', 'middle').attr('dominant-baseline', 'middle')
-          .attr('font-size', '9px').attr('fill', GOLD_LIGHT)
+          .attr('stroke', d.data.isAlive ? CARD_BG : CARD_BG_DEAD).attr('stroke-width', 1.5);
+
+        badgeG.append('text')
+          .attr('x', 0).attr('y', 0)
+          .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
+          .attr('font-size', '10px').attr('font-weight', 'bold').attr('fill', GOLD_LIGHT)
           .text(genderIcon);
       }
     });
@@ -380,15 +388,6 @@ const FamilyTree = forwardRef<FamilyTreeRef, FamilyTreeProps>(({ data, layoutMod
           event.stopPropagation();
           window.open(d.data.whatsappLink, '_blank');
         });
-    });
-
-    // Gold top accent line for selected node
-    nodeEnter.each(function(d) {
-      if (d.data.id !== selectedNodeId) return;
-      d3.select(this).append('rect')
-        .attr('width', nodeW - 4).attr('height', 3)
-        .attr('x', -nodeW / 2 + 2).attr('y', -nodeH / 2 + 2)
-        .attr('rx', 12).attr('fill', GOLD).attr('opacity', 0.8);
     });
 
     // Pan to selected node

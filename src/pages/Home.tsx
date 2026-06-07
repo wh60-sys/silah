@@ -166,14 +166,14 @@ export default function Home() {
             <p className="text-amber-200 text-sm uppercase tracking-[0.3em] mb-4">Selamat Datang</p>
             <h2 className="text-3xl font-semibold text-white mb-3">Sejarah Keluarga</h2>
             <p className="text-sm leading-7 text-slate-300 mb-8">
-              Selamat datang di catatan silsilah keluarga. Musik latar akan mulai setelah Anda menutup popup ini.
+              Selamat datang di silsilah keluarga bu SUNIPAH
             </p>
             <button
               type="button"
               onClick={handleStartBackgroundMusic}
               className="inline-flex items-center justify-center rounded-full bg-amber-500 px-6 py-3 text-sm font-semibold text-slate-950 transition hover:bg-amber-400"
             >
-              Mulai Musik
+              Lihat Sekarang
             </button>
           </div>
         </div>

@@ -28,11 +28,11 @@ export default function Toolbar({
       }}
       data-testid="toolbar"
     >
-      <ToolBtn icon={<ZoomOut className="w-4 h-4" />} label="Perkecil" onClick={onZoomOut} />
-      <ToolBtn icon={<Maximize2 className="w-4 h-4" />} label="Reset" onClick={onResetZoom} />
-      <ToolBtn icon={<ZoomIn className="w-4 h-4" />} label="Perbesar" onClick={onZoomIn} />
+      {/* <ToolBtn icon={<ZoomOut className="w-4 h-4" />} label="Perkecil" onClick={onZoomOut} /> */}
+      {/* <ToolBtn icon={<Maximize2 className="w-4 h-4" />} label="Reset" onClick={onResetZoom} /> */}
+      {/* <ToolBtn icon={<ZoomIn className="w-4 h-4" />} label="Perbesar" onClick={onZoomIn} /> */}
 
-      <Divider />
+      {/* <Divider /> */}
 
       <button
         onClick={() => setLayoutMode(layoutMode === 'horizontal' ? 'vertical' : 'horizontal')}
@@ -47,11 +47,11 @@ export default function Toolbar({
         }
       </button>
 
-      <Divider />
+      {/* <Divider /> */}
 
-      <ToolBtn icon={<FileJson className="w-4 h-4" />} label="Ekspor JSON" onClick={onExportJSON} />
-      <ToolBtn icon={<Image className="w-4 h-4" />} label="Ekspor PNG" onClick={onExportPNG} />
-      <ToolBtn icon={<Upload className="w-4 h-4" />} label="Impor" onClick={onImportClick} />
+      {/* <ToolBtn icon={<FileJson className="w-4 h-4" />} label="Ekspor JSON" onClick={onExportJSON} /> */}
+      {/* <ToolBtn icon={<Image className="w-4 h-4" />} label="Ekspor PNG" onClick={onExportPNG} /> */}
+      {/* <ToolBtn icon={<Upload className="w-4 h-4" />} label="Impor" onClick={onImportClick} /> */}
     </div>
   );
 }

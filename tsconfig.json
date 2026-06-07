@@ -10,6 +10,7 @@
     "resolveJsonModule": true,
     "allowImportingTsExtensions": true,
     "types": ["node", "vite/client"],
+    "ignoreDeprecations": "6.0", 
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
