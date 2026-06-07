@@ -35,6 +35,7 @@ export default function Home() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [filters, setFilters] = useState<TreeFilters>({ generations: [], branches: [] });
+  const audioSrc = `${import.meta.env.BASE_URL}ddd.mp3`;
 
   const { availableBranches, maxGen, totalNodes, aliveCount, waCount } = useMemo(() => {
     const branches = new Set<string>();
@@ -158,7 +159,7 @@ export default function Home() {
 
   return (
     <div className="flex h-screen w-full overflow-hidden bg-background text-foreground font-sans">
-      <audio ref={audioRef} src="/ddd.mp3" loop preload="auto" />
+      <audio ref={audioRef} src={audioSrc} loop preload="auto" />
       {showWelcome && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-5">
           <div className="w-full max-w-lg rounded-3xl border border-amber-200/20 bg-slate-950/95 p-8 text-center shadow-2xl backdrop-blur-xl">
