@@ -29,15 +29,10 @@ jobs:
         env:
           BASE_PATH: /silah/
 
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v4
-        with:
-          enablement: true
-
-      - name: Upload artifact for GitHub Pages
-        uses: actions/upload-pages-artifact@v5
-        with:
-          path: dist/public
-
       - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v1
+        uses: peaceiris/actions-gh-pages@v4.1.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist/public
+          publish_branch: gh-pages
+          keep_files: false
